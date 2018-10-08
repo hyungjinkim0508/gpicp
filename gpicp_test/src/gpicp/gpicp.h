@@ -266,6 +266,7 @@ namespace pcl
 
       public:
         int itr_max;
+        float m_epsilonHeight;
         std::vector<Eigen::Matrix4f> g_itrPoses;
 
       /** \brief Empty constructor. */
@@ -279,6 +280,7 @@ namespace pcl
         , max_inner_iterations_(20)
       {
         itr_max = 0;
+        m_epsilonHeight = 0.2;
 
 
 

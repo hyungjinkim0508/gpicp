@@ -402,14 +402,26 @@ pcl::GeneralizedIterativeClosestPoint_GP<PointSource, PointTarget>::computeTrans
       query.getVector4fMap () = guess * query.getVector4fMap ();
       query.getVector4fMap () = transformation_ * query.getVector4fMap ();
 
-      if (!this->searchForNeighborsWithHeight(query,dist_threshold,nn_indices, nn_dists))
+      bool heightconstraint = false;
+
+      if (!searchForNeighbors (query, nn_indices, nn_dists))
       {
         PCL_ERROR ("[pcl::%s::computeTransformation] Unable to find a nearest neighbor in the target dataset for point %d in the source!\n", getClassName ().c_str (), (*indices_)[i]);
         return;
       }
 
-      if(query.x < 0)
-        nn_dists[0] = dist_threshold * 2;
+      if(fabs(query.z - target_->at(nn_indices[0]).z) > m_epsilonHeight)
+        heightconstraint = true;
+
+
+      if(heightconstraint)
+      {
+        if (!this->searchForNeighborsWithHeight(query,dist_threshold,nn_indices, nn_dists))
+        {
+          PCL_ERROR ("[pcl::%s::computeTransformation] Unable to find a nearest neighbor in the target dataset for point %d in the source!\n", getClassName ().c_str (), (*indices_)[i]);
+          return;
+        }
+      }
 
       
       // Check if the distance to the nearest neighbor is smaller than the user imposed threshold

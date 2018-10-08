@@ -22,8 +22,8 @@ int main(int argc, char **argv)
   // Data load process
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudQuery(new pcl::PointCloud<pcl::PointXYZ>());
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget(new pcl::PointCloud<pcl::PointXYZ>());
-  pcl::io::loadPCDFile("/velodyneCloud_1.pcd", *cloudQuery);
-  pcl::io::loadPCDFile("/velodyneCloud_2.pcd", *cloudTarget);
+  pcl::io::loadPCDFile("velodyneCloud_1.pcd", *cloudQuery);
+  pcl::io::loadPCDFile("velodyneCloud_2.pcd", *cloudTarget);
 
 
   // GP-ICP preocess

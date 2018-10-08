@@ -10,7 +10,7 @@ The code is tested successfully at
 
 #### Current Status
 
-Date: 03/OCT/2018 \
+Date: 08/OCT/2018 \
 Version : 0.0.1 \
 Note: master branch
 
@@ -28,7 +28,7 @@ Yellow: G-ICP point cloud \
 
 * GP-ICP result (**Propsed method**) \
 Cyan: target point cloud \
-Magenta: G-ICP point cloud \
+Magenta: GP-ICP point cloud \
 ![Image of GPICPpose](/GP-ICPresult.png)
 
 
@@ -44,4 +44,5 @@ Check the result with rviz (load 'rviz_conf.rivz)
 The code is under BSD-License.
 
 #### Contact
-ny suggestions or improvements are welcome. Feel free to contact me at hjkim86@kaist.ac.kr.
+Any suggestions or improvements are welcome. Feel free to contact me at hjkim86@kaist.ac.kr. \
+Urban Robotics Lab (http://urobot.kaist.ac.kr)
