@@ -10,8 +10,8 @@ The code is tested successfully at
 
 #### Current Status
 
-Date: 08/OCT/2018 \
-Version : 0.0.1 \
+Date: 22/FEB/2019 \
+Version : 0.0.2 \
 Note: master branch
 
 ### Result

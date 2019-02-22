@@ -36,16 +36,27 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${PCL_INCLUDE_DIRS})
 include_directories(${Boost_INCLUDE_DIRS})
 
-#SET(CMAKE_CXX_FLAGS "-std=c++11 -O2 -g -Wall ${CMAKE_CXX_FLAGS}")
-SET(CMAKE_CXX_FLAGS "-std=c++11")
+SET(CMAKE_CXX_FLAGS "-std=c++11 -O3 ${CMAKE_CXX_FLAGS}")
+#SET(CMAKE_CXX_FLAGS "-std=c++11")
+
+find_package(OpenMP)
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
 
 
-set(gpicp_test_source
-    gpicp_test/src/gpicp/gpicp.h
-    gpicp_test/src/gpicp/gpicp.hpp
-    gpicp_test/src/gpicp/gpicp.cpp
+set(basic_source
+    src/gpicp/gpicp.h
+    src/gpicp/gpicp.hpp
+    src/gpicp/gpicp.cpp
+    src/gpicp/gpicp_omp.cpp
+    src/gpicp/gpicp_omp.h
+    src/gpicp/gpicp_omp_impl.hpp
 )
 
-add_executable(gpicp_test gpicp_test/gpicp_test.cpp ${gpicp_test_source})
-target_link_libraries(gpicp_test ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${PCL_LIBRARIES})
+include_directories(src)
+include_directories(src/pcl_omp/include)
 
+add_executable(gpicp_test gpicp_test/gpicp_test.cpp ${basic_source})
+target_link_libraries(gpicp_test ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${PCL_LIBRARIES})

@@ -7,11 +7,15 @@
 #include <pcl/point_types.h>
 #include <pcl/common/transforms.h>
 #include <pcl/registration/gicp.h>
+#include "gpicp/gpicp_omp.h"
+#include "gpicp/gpicp.h"
 
-#include "src/gpicp/gpicp.h"
+#include <pcl/filters/voxel_grid.h>
 
 int main(int argc, char **argv)
 {
+  std::cout << "ver1" << std::endl;
+
   ros::init(argc, argv, "gpicp_test");
   ros::NodeHandle n;
   ros::Publisher pub_cloudQuery = n.advertise<sensor_msgs::PointCloud2>("cloudQuery", 1);
@@ -21,21 +25,27 @@ int main(int argc, char **argv)
 
   // Data load process
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudQuery(new pcl::PointCloud<pcl::PointXYZ>());
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloudQuery_voxel(new pcl::PointCloud<pcl::PointXYZ>());
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget(new pcl::PointCloud<pcl::PointXYZ>());
   pcl::io::loadPCDFile("velodyneCloud_1.pcd", *cloudQuery);
   pcl::io::loadPCDFile("velodyneCloud_2.pcd", *cloudTarget);
 
+  pcl::VoxelGrid<pcl::PointXYZ> sor;
+  sor.setInputCloud (cloudQuery);
+  sor.setLeafSize (0.2, 0.2, 0.2);
+  sor.filter (*cloudQuery_voxel);
+  *cloudQuery = *cloudQuery_voxel;
 
   // GP-ICP preocess
   std::cout << "GP-ICP start!" << std::endl;
   pcl::PointCloud<pcl::PointXYZ> cloudResult_GPICP;
   pcl::GeneralizedIterativeClosestPoint_GP<pcl::PointXYZ, pcl::PointXYZ> gpicp;
+
   gpicp.setInputSource(cloudQuery);
-  gpicp.setInputTarget(cloudTarget);  
+  gpicp.setInputTarget(cloudTarget);
   gpicp.align(cloudResult_GPICP);
   Eigen::Matrix4f GPICP_result = gpicp.getFinalTransformation();
   pcl::transformPointCloud(*cloudQuery,cloudResult_GPICP,GPICP_result);
-
   std::cout << "GP-ICP Result transformation" << std::endl;
   std::cout << GPICP_result << std::endl;
 
@@ -43,14 +53,15 @@ int main(int argc, char **argv)
   std::cout << "G-ICP start!" << std::endl;
   pcl::PointCloud<pcl::PointXYZ> cloudResult_GICP;
   pcl::GeneralizedIterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> gicp;
+
   gicp.setInputSource(cloudQuery);
   gicp.setInputTarget(cloudTarget);
   gicp.align(cloudResult_GICP);
   Eigen::Matrix4f GICP_result = gicp.getFinalTransformation();
   pcl::transformPointCloud(*cloudQuery,cloudResult_GICP,GICP_result);
-
   std::cout << "G-ICP Result transformation" << std::endl;
   std::cout << GICP_result << std::endl;
+
 
   // Display process in rviz
   sensor_msgs::PointCloud2 cloud_ROS_target;
